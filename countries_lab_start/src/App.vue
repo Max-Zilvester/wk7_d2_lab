@@ -6,12 +6,14 @@
       <option disabled value="">Select a country</option>
       <option v-for="country in countries" :key="country.alpha3code" :value="country">{{country.name}}</option>
     </select>
+    
+    
 
-    <country-detail></country-detail>
+    <country-detail :selectedCountry="selectedCountry"></country-detail>
 
-    <button>Add Country to favourites</button>
+    <button v-on:click="addFavourite(selectedCountry)">Add Country to favourites</button>
 
-    <favourite-countries></favourite-countries>
+    <favourite-countries :favouriteCountries="favouriteCountries"></favourite-countries>
 </div>
 
 </template>
@@ -34,11 +36,22 @@ export default {
     'favourite-countries': FavouriteListItem
   },
     mounted(){
+      this.fetchCountries();
 
     },
     methods: {
-      
+      fetchCountries: function(){
+        fetch("https://restcountries.eu/rest/v2/all")
+        .then(response => response.json())
+        .then(data => this.countries = data )
+      },
+      addFavourite: function(selectedCountry){
+        if (this.favouriteCountries.includes(selectedCountry) === false) {
+        this.favouriteCountries.push(this.selectedCountry)
+        }
+      }
     }
+        
 }
 </script>
 
